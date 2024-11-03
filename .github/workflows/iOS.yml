@@ -32,11 +32,11 @@ jobs:
       # Build iOS IPA
       - name: Build iOS IPA
         run: |
-          flutter build ipa --release --obfuscate --split-debug-info build/ios/outputs/symbols --no-codesign 
+          flutter build ipa --release --no-codesign
 
       # Upload IPA as artifact
       - name: Upload release IPA
         uses: actions/upload-artifact@v3
         with:
           name: release-ipa
-          path: build/ios/outputs/
+          path: build/
