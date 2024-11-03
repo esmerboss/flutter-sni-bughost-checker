@@ -1,6 +1,7 @@
 name: Flutter Release
 
 on:
+  workflow_dispatch:  # Elle başlatmak için
   push:
     tags:
       - 'v*' # Versiyon etiketi ile push yapıldığında tetiklenecek, örneğin v1.0.0
@@ -60,4 +61,3 @@ jobs:
       with:
         name: ios-build
         path: build/ios/iphoneos
-
