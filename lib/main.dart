@@ -7,20 +7,35 @@ import 'package:flutter/services.dart';
 
 void main() => runApp(SniCheckerApp());
 
-class SniCheckerApp extends StatelessWidget {
+class SniCheckerApp extends StatefulWidget {
+  @override
+  _SniCheckerAppState createState() => _SniCheckerAppState();
+}
+
+class _SniCheckerAppState extends State<SniCheckerApp> {
+  bool _isDarkTheme = true;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SNI Checker',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: SniCheckerHomePage(),
+      theme: _isDarkTheme ? ThemeData.dark() : ThemeData.light(),
+      home: SniCheckerHomePage(toggleTheme: _toggleTheme),
     );
+  }
+
+  void _toggleTheme() {
+    setState(() {
+      _isDarkTheme = !_isDarkTheme;
+    });
   }
 }
 
 class SniCheckerHomePage extends StatefulWidget {
+  final VoidCallback toggleTheme;
+
+  SniCheckerHomePage({required this.toggleTheme});
+
   @override
   _SniCheckerHomePageState createState() => _SniCheckerHomePageState();
 }
@@ -99,6 +114,12 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('SNI Checker'),
+        actions: [
+          IconButton(
+            icon: Icon(_isDarkTheme(context) ? Icons.dark_mode : Icons.light_mode),
+            onPressed: widget.toggleTheme,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -168,5 +189,9 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
         ),
       ),
     );
+  }
+
+  bool _isDarkTheme(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark;
   }
 }
