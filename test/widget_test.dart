@@ -4,6 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:com_kaandikec_snihostchecker/main.dart';
 
 void main() {
+  setUpAll(() async {
+    databaseFactory = databaseFactoryFfi;
+  });
+
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const SniCheckerApp());
