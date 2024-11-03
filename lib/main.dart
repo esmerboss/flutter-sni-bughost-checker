@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:convert';
+import 'package:file_picker/file_picker.dart';
 
 void main() => runApp(SniCheckerApp());
 
@@ -71,6 +72,17 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
     }
   }
 
+  void _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['txt']);
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      String content = await file.readAsString();
+      setState(() {
+        _controller.text = content;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,6 +100,11 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
                 labelText: 'Enter hosts (one per line)',
               ),
               maxLines: 5,
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: _pickFile,
+              child: Text('Load from File'),
             ),
             SizedBox(height: 20),
             ElevatedButton(
