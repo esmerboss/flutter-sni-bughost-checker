@@ -13,13 +13,13 @@ void main() async {
 }
 
 class SniCheckerApp extends StatefulWidget {
-  const SniCheckerApp({Key? key}) : super(key: key);
+  const SniCheckerApp({super.key});
 
   @override
-  _SniCheckerAppState createState() => _SniCheckerAppState();
+  SniCheckerAppState createState() => SniCheckerAppState();
 }
 
-class _SniCheckerAppState extends State<SniCheckerApp> {
+class SniCheckerAppState extends State<SniCheckerApp> {
   bool _isDarkTheme = true;
 
   @override
@@ -57,13 +57,13 @@ class _SniCheckerAppState extends State<SniCheckerApp> {
 class SniCheckerHomePage extends StatefulWidget {
   final VoidCallback toggleTheme;
 
-  const SniCheckerHomePage({Key? key, required this.toggleTheme}) : super(key: key);
+  const SniCheckerHomePage({super.key, required this.toggleTheme});
 
   @override
-  _SniCheckerHomePageState createState() => _SniCheckerHomePageState();
+  SniCheckerHomePageState createState() => SniCheckerHomePageState();
 }
 
-class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
+class SniCheckerHomePageState extends State<SniCheckerHomePage> {
   final TextEditingController _parallelChecksController = TextEditingController(text: '5');
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _timeoutController = TextEditingController(text: '5');
@@ -115,7 +115,7 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
 
     List<Future<void>> futures = [];
     for (String host in hosts) {
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       if (!_isChecking) break;
 
       host = host.trim();
@@ -155,7 +155,6 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
       return response.statusCode == 200;
     } catch (e) {
       // TODO: Replace with proper logging solution
-      print('Error checking $hostname: \$e');
       return false;
     }
   }
