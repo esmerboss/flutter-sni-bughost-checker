@@ -228,7 +228,7 @@ class SniCheckerHomePageState extends State<SniCheckerHomePage> {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    Container(
+                    SizedBox(
                       width: 80,
                       child: TextField(
                         controller: _timeoutController,
@@ -240,7 +240,7 @@ class SniCheckerHomePageState extends State<SniCheckerHomePage> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    Container(
+                    SizedBox(
                       width: 80,
                       child: TextField(
                         controller: _parallelChecksController,
