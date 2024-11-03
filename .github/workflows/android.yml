@@ -33,9 +33,25 @@ jobs:
       - name: Build Android APK
         run: flutter build apk --release
 
-      # Upload APK as artifact
-      - name: Upload release APK
-        uses: actions/upload-artifact@v3
+      # Create a GitHub release and attach the APK
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      # Upload APK to GitHub release
+      - name: Upload APK to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/app/outputs/flutter-apk/app-release.apk
+          asset_name: app-release.apk
+          asset_content_type: application/vnd.android.package-archive
