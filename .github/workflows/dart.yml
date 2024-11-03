@@ -16,11 +16,15 @@ jobs:
       # Setup Flutter instead of Dart
       - uses: subosito/flutter-action@v2
         with:
+<<<<<<< HEAD
           flutter-version: "3.10.0" # Uyumlu bir sürüm kullanın
       - name: Setup Dart SDK
         uses: dart-lang/setup-dart@v1
         with:
           sdk: ">=2.18.0 <3.0.0"
+=======
+          flutter-version: "3.x" # Specify the version if needed
+>>>>>>> c8c1d117b4a970f3f606c87c5063926c673565da
 
       - name: Install dependencies
         run: flutter pub get
