@@ -17,6 +17,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
 <<<<<<< HEAD
+<<<<<<< HEAD
           flutter-version: "3.10.0" # Uyumlu bir sürüm kullanın
       - name: Setup Dart SDK
         uses: dart-lang/setup-dart@v1
@@ -25,6 +26,12 @@ jobs:
 =======
           flutter-version: "3.x" # Specify the version if needed
 >>>>>>> c8c1d117b4a970f3f606c87c5063926c673565da
+=======
+          flutter-version: "3.18.0" # Specify the version if needed
+
+      - name: Clean project
+        run: flutter clean
+>>>>>>> 4db5a71609711cc947cd7cad234a5f6358be1695
 
       - name: Install dependencies
         run: flutter pub get
