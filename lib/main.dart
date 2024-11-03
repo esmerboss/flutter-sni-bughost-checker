@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(SniCheckerApp());
 
@@ -83,6 +84,16 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
     }
   }
 
+  void _copyToClipboard() {
+    if (_successHosts.isNotEmpty) {
+      String content = _successHosts.join('\n');
+      Clipboard.setData(ClipboardData(text: content));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Success hosts copied to clipboard')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,6 +141,27 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
                 children: [
                   Text('Success: $_successCount'),
                   Text('Fail: $_failCount'),
+                  SizedBox(height: 10),
+                  if (_successHosts.isNotEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Successful Hosts:', style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextField(
+                          controller: TextEditingController(text: _successHosts.join('\n')),
+                          maxLines: 5,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: _copyToClipboard,
+                          child: Text('Copy to Clipboard'),
+                        ),
+                      ],
+                    ),
                 ],
               ),
           ],
