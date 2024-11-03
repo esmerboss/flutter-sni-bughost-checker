@@ -201,6 +201,18 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+
+                TextField(
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.newline,
+                  controller: _controller,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Enter hosts (one per line)',
+                  ),
+                  maxLines: 5,
+                ),
+                SizedBox(height: 10),
                 Row(
                   children: [
                     Container(
@@ -220,17 +232,6 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
                       child: Text('Load from File'),
                     ),
                   ],
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  keyboardType: TextInputType.multiline,
-                  textInputAction: TextInputAction.newline,
-                  controller: _controller,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Enter hosts (one per line)',
-                  ),
-                  maxLines: 5,
                 ),
                 SizedBox(height: 10),
                 ElevatedButton(
