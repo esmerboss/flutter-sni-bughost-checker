@@ -16,7 +16,7 @@ jobs:
       # Setup Flutter instead of Dart
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "stable" # Specify the version if needed
+          flutter-version: "3.10.0" # Specify the version if needed
 
       - name: Clean project
         run: flutter clean
