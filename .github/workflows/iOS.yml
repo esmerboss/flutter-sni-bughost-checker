@@ -33,7 +33,7 @@ jobs:
       - name: Build iOS IPA
         run: |
           flutter build ipa --release --no-codesign
-          cd build/archive/Runner.xcarchive/Products/Applications
+          cd build/ios/archive/Runner.xcarchive/Products/Applications
           mkdir PayLoad
           mv Runner.app Payload/
           zip -r release-app.zip Payload
