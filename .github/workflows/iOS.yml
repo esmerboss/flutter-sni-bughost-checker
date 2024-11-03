@@ -34,16 +34,9 @@ jobs:
         run: |
           flutter build ios --release --no-codesign
 
-      # Create Tag
-      - name: Create Tag
-        run: |
-          git tag v$(date +%Y%m%d%H%M%S)
-          git push origin --tags
-
-      # Create GitHub Release
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+      # Upload IPA as artifact
+      - name: Upload release IPA
+        uses: actions/upload-artifact@v3
         with:
-          files: build/ios/ipa/*.ipa
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: release-ipa
+          path: build/ios/
