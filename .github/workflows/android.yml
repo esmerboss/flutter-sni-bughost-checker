@@ -1,0 +1,39 @@
+name: Android Release CI
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      # Setup Flutter instead of Dart
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.19.3"
+
+      - name: Clean project
+        run: flutter clean
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - run: flutter --version
+
+      # Build release APK
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      # Upload APK as artifact
+      - name: Upload release APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
