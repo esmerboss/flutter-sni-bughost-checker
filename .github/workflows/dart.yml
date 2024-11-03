@@ -42,14 +42,14 @@ jobs:
 
     # 7. Android APK çıktısını yedekleyin
     - name: Upload Android APK
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: android-apk
         path: build/app/outputs/flutter-apk/app-release.apk
 
     # 8. Web uygulaması çıktısını yedekleyin
     - name: Upload Web Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: web-build
         path: build/web
@@ -57,7 +57,7 @@ jobs:
     # 9. iOS çıktısını yedekleyin (sadece macOS runner'da)
     - name: Upload iOS Build
       if: runner.os == 'macOS'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ios-build
         path: build/ios/iphoneos
