@@ -9,10 +9,12 @@ import 'package:path/path.dart' as p;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DatabaseHelper.instance.initializeDatabase();
-  runApp(SniCheckerApp());
+  runApp(const SniCheckerApp());
 }
 
 class SniCheckerApp extends StatefulWidget {
+  const SniCheckerApp({Key? key}) : super(key: key);
+
   @override
   _SniCheckerAppState createState() => _SniCheckerAppState();
 }
@@ -55,7 +57,7 @@ class _SniCheckerAppState extends State<SniCheckerApp> {
 class SniCheckerHomePage extends StatefulWidget {
   final VoidCallback toggleTheme;
 
-  SniCheckerHomePage({required this.toggleTheme});
+  const SniCheckerHomePage({Key? key, required this.toggleTheme}) : super(key: key);
 
   @override
   _SniCheckerHomePageState createState() => _SniCheckerHomePageState();
@@ -65,8 +67,8 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
   final TextEditingController _parallelChecksController = TextEditingController(text: '5');
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _timeoutController = TextEditingController(text: '5');
-  List<String> _hosts = [];
-  List<String> _successHosts = [];
+  final List<String> _hosts = [];
+  final List<String> _successHosts = [];
   int _successCount = 0;
   int _failCount = 0;
   bool _isLoading = false;
@@ -152,6 +154,7 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
       final response = await http.get(url).timeout(Duration(seconds: timeout));
       return response.statusCode == 200;
     } catch (e) {
+      // TODO: Replace with proper logging solution
       print('Error checking $hostname: \$e');
       return false;
     }
@@ -184,7 +187,7 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
       String content = _successHosts.join('\n');
       Clipboard.setData(ClipboardData(text: content));
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Success hosts copied to clipboard')),
+        const SnackBar(content: Text('Success hosts copied to clipboard')),
       );
     }
   }
@@ -193,10 +196,10 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('SNI Checker'),
+        title: const Text('SNI Checker'),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
             onPressed: _clearAll,
           ),
           IconButton(
@@ -217,13 +220,13 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
                   keyboardType: TextInputType.multiline,
                   textInputAction: TextInputAction.newline,
                   controller: _controller,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Enter hosts (one per line)',
                   ),
                   maxLines: 5,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     Container(
@@ -231,71 +234,71 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
                       child: TextField(
                         controller: _timeoutController,
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Timeout (s)',
                         ),
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Container(
                       width: 80,
                       child: TextField(
                         controller: _parallelChecksController,
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Parallel',
                         ),
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: _pickFile,
-                      child: Text('Load from File'),
+                      child: const Text('Load from File'),
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: _clearAll,
-                  child: Text('Clear All'),
+                  child: const Text('Clear All'),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: _checkSniForHosts,
                   child: Text(_isLoading ? 'Stop Checking' : 'Check SNI'),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextField(
                   controller: TextEditingController(text: _hosts.join('\n')),
                   maxLines: 10,
                   readOnly: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Hosts Log',
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Success: $_successCount'),
                     Text('Fail: $_failCount'),
-                    SizedBox(height: 10),
-                    Text('Successful Hosts:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 10),
+                    const Text('Successful Hosts:', style: TextStyle(fontWeight: FontWeight.bold)),
                     TextField(
                       controller: TextEditingController(text: _successHosts.join('\n')),
                       maxLines: 5,
                       readOnly: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: _copyToClipboard,
-                      child: Text('Copy to Clipboard'),
+                      child: const Text('Copy to Clipboard'),
                     ),
                   ],
                 ),
