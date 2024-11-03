@@ -44,4 +44,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: release-ipa
-          path: build/archive/Runner.xcarchive/Products/Applications/*.ipa
+          path: build/ios/archive/Runner.xcarchive/Products/Applications/*.ipa
