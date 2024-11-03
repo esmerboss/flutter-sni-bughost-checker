@@ -33,10 +33,15 @@ jobs:
       - name: Build iOS IPA
         run: |
           flutter build ipa --release --no-codesign
+          cd build/archive/Runner.xcarchive/Products/Applications
+          mkdir PayLoad
+          mv Runner.app Payload/
+          zip -r release-app.zip Payload
+          mv release-app.zip release-app.ipa
 
       # Upload IPA as artifact
       - name: Upload release IPA
         uses: actions/upload-artifact@v3
         with:
           name: release-ipa
-          path: build/
+          path: build/archive/Runner.xcarchive/Products/Applications/*.ipa
