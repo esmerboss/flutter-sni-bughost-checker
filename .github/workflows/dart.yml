@@ -18,11 +18,6 @@ jobs:
         with:
           flutter-version: "3.x" # Specify the version if needed
 
-      - name: Setup Dart SDK
-        uses: dart-lang/setup-dart@v1
-        with:
-          sdk: ">=2.18.0 <3.0.0"
-
       - name: Install dependencies
         run: flutter pub get
 
