@@ -208,51 +208,38 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
                   child: Text('Check SNI'),
                 ),
                 SizedBox(height: 20),
-                if (_isLoading)
-                  Center(
-                    child: CircularProgressIndicator(),
+                TextField(
+                  controller: TextEditingController(text: _hosts.join('\n')),
+                  maxLines: 10,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Hosts Log',
                   ),
-                if (!_isLoading)
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: _hosts.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(_hosts[index]),
-                      );
-                    },
-                  ),
+                ),
                 SizedBox(height: 20),
-                if (!_isLoading)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Success: $_successCount'),
-                      Text('Fail: $_failCount'),
-                      SizedBox(height: 10),
-                      if (_successHosts.isNotEmpty)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Successful Hosts:', style: TextStyle(fontWeight: FontWeight.bold)),
-                            TextField(
-                              controller: TextEditingController(text: _successHosts.join('\n')),
-                              maxLines: 5,
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            ElevatedButton(
-                              onPressed: _copyToClipboard,
-                              child: Text('Copy to Clipboard'),
-                            ),
-                          ],
-                        ),
-                    ],
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Success: $_successCount'),
+                    Text('Fail: $_failCount'),
+                    SizedBox(height: 10),
+                    Text('Successful Hosts:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    TextField(
+                      controller: TextEditingController(text: _successHosts.join('\n')),
+                      maxLines: 5,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: _copyToClipboard,
+                      child: Text('Copy to Clipboard'),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
