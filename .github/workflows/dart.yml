@@ -1,40 +1,32 @@
-name: Flutter
+name: Dart CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Clone repository
+        uses: actions/checkout@v4
 
       # Setup Flutter instead of Dart
       - uses: subosito/flutter-action@v2
         with:
-<<<<<<< HEAD
-<<<<<<< HEAD
-          flutter-version: "3.10.0" # Uyumlu bir sürüm kullanın
-      - name: Setup Dart SDK
-        uses: dart-lang/setup-dart@v1
-        with:
-          sdk: ">=2.18.0 <3.0.0"
-=======
-          flutter-version: "3.x" # Specify the version if needed
->>>>>>> c8c1d117b4a970f3f606c87c5063926c673565da
-=======
-          flutter-version: "3.18.0" # Specify the version if needed
+          channel: stable
+          flutter-version-file: pubspec.yaml
 
       - name: Clean project
         run: flutter clean
->>>>>>> 4db5a71609711cc947cd7cad234a5f6358be1695
 
       - name: Install dependencies
         run: flutter pub get
+
+      - run: flutter --version
 
       - name: Upgrade dependencies
         run: flutter pub upgrade
