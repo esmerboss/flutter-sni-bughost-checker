@@ -1,0 +1,44 @@
+name: Windows Release CI
+
+on:
+  workflow_dispatch:
+    # Allows manual triggering of the workflow
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      # Setup Flutter instead of Dart
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.19.3"
+
+      - name: Clean project
+        run: flutter clean
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - run: flutter --version
+
+      # Build Windows release
+      - name: Build Windows Release
+        run: flutter build windows --release
+
+      # Create single executable using Inno Setup
+      - name: Create Single Executable
+        run: |
+          powershell -command "& { iwr -useb https://jrsoftware.org/download.php/is.exe -OutFile is.exe }"
+          iscc /Q /O"output" /F"sni_checker_installer" windows_installer_script.iss
+
+      # Upload Windows Build as artifact
+      - name: Upload Windows Build
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-release
+          path: output/*.exe
