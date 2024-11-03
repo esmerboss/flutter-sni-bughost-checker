@@ -63,11 +63,13 @@ class SniCheckerHomePage extends StatefulWidget {
 
 class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _timeoutController = TextEditingController(text: '5');
   List<String> _hosts = [];
   List<String> _successHosts = [];
   int _successCount = 0;
   int _failCount = 0;
   bool _isLoading = false;
+  bool _isChecking = false;
 
   @override
   void initState() {
@@ -85,9 +87,19 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
   }
 
   void _checkSniForHosts() async {
+    if (_isChecking) {
+      // Interrupt the current checking process
+      setState(() {
+        _isChecking = false;
+        _isLoading = false;
+      });
+      return;
+    }
+
     await DatabaseHelper.instance.insertHosts(_controller.text);
     setState(() {
       _isLoading = true;
+      _isChecking = true;
       _successHosts.clear();
       _successCount = 0;
       _failCount = 0;
@@ -95,10 +107,16 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
     });
 
     List<String> hosts = _controller.text.split('\n');
+    int timeout = int.tryParse(_timeoutController.text) ?? 5;
+
     for (String host in hosts) {
+      if (!_isChecking) {
+        break;
+      }
+
       host = host.trim();
       if (host.isNotEmpty) {
-        bool result = await _checkSni(host);
+        bool result = await _checkSni(host, timeout);
         setState(() {
           if (result) {
             _successHosts.add(host);
@@ -106,20 +124,21 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
           } else {
             _failCount++;
           }
-          _hosts.add('${host} - ${result ? "Success" : "Fail"}');
+          _hosts.add('$host - ${result ? "Success" : "Fail"}');
         });
       }
     }
 
     setState(() {
       _isLoading = false;
+      _isChecking = false;
     });
   }
 
-  Future<bool> _checkSni(String hostname) async {
+  Future<bool> _checkSni(String hostname, int timeout) async {
     try {
       final url = Uri.https(hostname, '');
-      final response = await http.get(url);
+      final response = await http.get(url).timeout(Duration(seconds: timeout));
       return response.statusCode == 200;
     } catch (e) {
       return false;
@@ -182,6 +201,27 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 80,
+                      child: TextField(
+                        controller: _timeoutController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Timeout (s)',
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: _pickFile,
+                      child: Text('Load from File'),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
                 TextField(
                   keyboardType: TextInputType.multiline,
                   textInputAction: TextInputAction.newline,
@@ -194,18 +234,13 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
                 ),
                 SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: _pickFile,
-                  child: Text('Load from File'),
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
                   onPressed: _clearAll,
                   child: Text('Clear All'),
                 ),
                 SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: _isLoading ? null : _checkSniForHosts,
-                  child: Text('Check SNI'),
+                  onPressed: _checkSniForHosts,
+                  child: Text(_isLoading ? 'Stop Checking' : 'Check SNI'),
                 ),
                 SizedBox(height: 20),
                 TextField(
