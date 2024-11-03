@@ -1,0 +1,63 @@
+name: Flutter Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Versiyon etiketi ile push yapıldığında tetiklenecek, örneğin v1.0.0
+
+jobs:
+  build:
+    name: Build Flutter Artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Kodunuzu repodan kontrol edin
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    # 2. Flutter SDK'yı kurun
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: 'stable'
+
+    # 3. Flutter bağımlılıklarını yükleyin
+    - name: Install Dependencies
+      run: flutter pub get
+
+    # 4. Android için APK oluşturun
+    - name: Build Android APK
+      run: flutter build apk --release
+
+    # 5. iOS için IPA oluşturun
+    # NOT: Bu adım sadece macOS runner üzerinde çalışır.
+    - name: Build iOS
+      if: runner.os == 'macOS'
+      run: flutter build ios --release
+
+    # 6. Web uygulaması oluşturun
+    - name: Build Web
+      run: flutter build web
+
+    # 7. Android APK çıktısını yedekleyin
+    - name: Upload Android APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: android-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
+
+    # 8. Web uygulaması çıktısını yedekleyin
+    - name: Upload Web Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: web-build
+        path: build/web
+
+    # 9. iOS çıktısını yedekleyin (sadece macOS runner'da)
+    - name: Upload iOS Build
+      if: runner.os == 'macOS'
+      uses: actions/upload-artifact@v2
+      with:
+        name: ios-build
+        path: build/ios/iphoneos
+
