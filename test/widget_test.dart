@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart'; // Import the required library
 
 import 'package:com_kaandikec_snihostchecker/main.dart';
 
 void main() {
-  setUpAll(() async {
+  // Initialize the FFI loader for sqflite
+  setUpAll(() {
+    sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   });
 
