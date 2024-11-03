@@ -62,6 +62,7 @@ class SniCheckerHomePage extends StatefulWidget {
 }
 
 class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
+  final TextEditingController _parallelChecksController = TextEditingController(text: '5');
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _timeoutController = TextEditingController(text: '5');
   List<String> _hosts = [];
@@ -107,27 +108,37 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
     });
 
     List<String> hosts = _controller.text.split('\n');
-    int timeout = int.tryParse(_timeoutController.text) ?? 5;
+    int timeout = int.tryParse(_timeoutController.text) ?? 10;
+    int parallelChecks = int.tryParse(_parallelChecksController.text) ?? 3;
 
+    List<Future<void>> futures = [];
     for (String host in hosts) {
-      if (!_isChecking) {
-        break;
-      }
+      await Future.delayed(Duration(milliseconds: 100));
+      if (!_isChecking) break;
 
       host = host.trim();
       if (host.isNotEmpty) {
-        bool result = await _checkSni(host, timeout);
-        setState(() {
-          if (result) {
-            _successHosts.add(host);
-            _successCount++;
-          } else {
-            _failCount++;
-          }
-          _hosts.add('$host - ${result ? "Success" : "Fail"}');
-        });
+        futures.add(_checkSni(host, timeout).then((result) {
+          if (!_isChecking) return;
+          setState(() {
+            if (result) {
+              _successHosts.add(host);
+              _successCount++;
+            } else {
+              _failCount++;
+            }
+            _hosts.add('$host - ${result ? "Success" : "Fail"}');
+          });
+        }));
+
+        if (futures.length >= parallelChecks) {
+          await Future.wait(futures);
+          futures.clear();
+        }
       }
     }
+
+    await Future.wait(futures);
 
     setState(() {
       _isLoading = false;
@@ -141,6 +152,7 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
       final response = await http.get(url).timeout(Duration(seconds: timeout));
       return response.statusCode == 200;
     } catch (e) {
+      print('Error checking $hostname: \$e');
       return false;
     }
   }
@@ -201,7 +213,6 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-
                 TextField(
                   keyboardType: TextInputType.multiline,
                   textInputAction: TextInputAction.newline,
@@ -223,6 +234,18 @@ class _SniCheckerHomePageState extends State<SniCheckerHomePage> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Timeout (s)',
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Container(
+                      width: 80,
+                      child: TextField(
+                        controller: _parallelChecksController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Parallel',
                         ),
                       ),
                     ),
