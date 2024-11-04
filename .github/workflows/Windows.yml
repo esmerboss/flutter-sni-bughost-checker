@@ -1,12 +1,14 @@
-name: Windows Release CI
+name: GitHub Pages Deploy
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
-    # Allows manual triggering of the workflow
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Clone repository
@@ -18,27 +20,22 @@ jobs:
           channel: stable
           flutter-version: "3.19.3"
 
-      - name: Clean project
-        run: flutter clean
-
       - name: Install dependencies
         run: flutter pub get
 
-      - run: flutter --version
+      - name: Build Flutter Web
+        run: flutter build web --release
 
-      # Build Windows release
-      - name: Build Windows Release
-        run: flutter build windows --release
-
-      # Create single executable using Inno Setup
-      - name: Create Single Executable
+      - name: Deploy to GitHub Pages
         run: |
-          powershell -command "& { iwr -useb https://jrsoftware.org/download.php/is.exe -OutFile is.exe }"
-          iscc /Q /O"output" /F"sni_checker_installer" windows_installer_script.iss
-
-      # Upload Windows Build as artifact
-      - name: Upload Windows Build
-        uses: actions/upload-artifact@v3
-        with:
-          name: windows-release
-          path: output/*.exe
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git clone https://github.com/${{ github.repository }}.git --branch gh-pages --single-branch gh-pages
+          rsync -av --delete build/web/ gh-pages/
+          cd gh-pages
+          git add --all
+          git commit -m "Deploy to GitHub Pages"
+          git push origin gh-pages
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
