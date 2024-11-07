@@ -1,9 +1,6 @@
 name: Windows Release CI
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
   workflow_dispatch:
     # Allows manual triggering of the workflow
 
@@ -40,11 +37,11 @@ jobs:
 
       # List build directory to debug the output path
       - name: List build directory
-        run: dir build\windows\runner\Release
+        run: dir build\windows\x64\runner\Release
 
       # Upload EXE as artifact
       - name: Upload release EXE
         uses: actions/upload-artifact@v3
         with:
           name: release-exe
-          path: build/windows/runner/Release
+          path: build/windows/x64/runner/Release/com_kaandikec_snihostchecker.exe
