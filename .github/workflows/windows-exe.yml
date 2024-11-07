@@ -1,37 +1,43 @@
-name: Build Windows EXE
+name: Windows Release CI
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
+    # Allows manual triggering of the workflow
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v2
+      - name: Clone repository
+        uses: actions/checkout@v4
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: 'stable'
+      # Setup Flutter
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.19.3"
 
-    - name: Install dependencies
-      run: flutter pub get
+      - name: Clean project
+        run: flutter clean
 
-    - name: Enable Windows Desktop Support
-      run: flutter config --enable-windows-desktop
+      - name: Install dependencies
+        run: flutter pub get
 
-    - name: Build Windows EXE
-      run: flutter build windows
+      - name: Check Flutter Version
+        run: flutter --version
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: windows-exe
-        path: build/windows/runner/Release
+      # Enable Windows Desktop Support
+      - name: Enable Windows Desktop Support
+        run: flutter config --enable-windows-desktop
+
+      # Build release EXE for Windows
+      - name: Build Windows EXE
+        run: flutter build windows --release
+
+      # Upload EXE as artifact
+      - name: Upload release EXE
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-exe
+          path: build/windows/runner/Release
