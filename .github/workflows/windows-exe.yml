@@ -1,6 +1,9 @@
 name: Windows Release CI
 
 on:
+  push:
+    tags:
+      - 'v*.*.*'
   workflow_dispatch:
     # Allows manual triggering of the workflow
 
@@ -31,9 +34,13 @@ jobs:
       - name: Enable Windows Desktop Support
         run: flutter config --enable-windows-desktop
 
-      # Build release EXE for Windows
+      # Build release EXE for Windows with verbose logging
       - name: Build Windows EXE
-        run: flutter build windows --release
+        run: flutter build windows --release --verbose
+
+      # List build directory to debug the output path
+      - name: List build directory
+        run: dir build\windows\runner\Release
 
       # Upload EXE as artifact
       - name: Upload release EXE
