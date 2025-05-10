@@ -26,7 +26,7 @@ yaml
          run: flutter pub get
 
        - name: Run Flutter build
-         run: flutter build apk  # veya başka bir komut (flutter build ios gibi)
+         run: flutter build ios  # veya başka bir komut (flutter build ios gibi)
 
        - name: Run tests
          run: flutter test
